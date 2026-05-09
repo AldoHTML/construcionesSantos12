@@ -6,14 +6,6 @@
 <title>Santos Construcciones | Construimos con Confianza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-  (function(){
-    emailjs.init({
-      publicKey: '-C7rHurNs-abT6o1p'
-    });
-  })();
-</script>
 <style>
   :root {
     --navy: #1a2a4a;
@@ -1014,36 +1006,33 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = 'Enviando...';
 
-  const serviceID  = 'service_9a2uip6';
-  const templateID = 'template_uw51ama';
-
-  const templateParams = {
-    from_name:    name,
-    from_email:   email,
-    company:      company || 'No especificada',
-    phone:        phone   || 'No proporcionado',
-    project_type: type,
-    message:      msg,
-    
-  };
-
-  emailjs.send(serviceID, templateID, templateParams)
-    .then(() => {
-      showFormMsg('success', '✅ ¡Mensaje enviado! Te contactaremos en menos de 24 horas.');
-      document.getElementById('contactForm').reset();
+  // Formspree
+  fetch('https://formspree.io/f/xwvyrwrv', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      nombre:          name,
+      correo:          email,
+      empresa:         company || 'No especificada',
+      telefono:        phone   || 'No proporcionado',
+      tipo_proyecto:   type,
+      mensaje:         msg
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        showFormMsg('success', '✅ ¡Mensaje enviado! Te contactaremos en menos de 24 horas.');
+        document.getElementById('contactForm').reset();
+      } else {
+        throw new Error('Error en el servidor');
+      }
       btn.disabled = false;
       btn.textContent = 'Enviar Solicitud';
     })
-    .catch((err) => {
-      console.error('EmailJS error:', err);
-      // Si EmailJS no está configurado, redirige a WhatsApp como respaldo
-      showFormMsg('warning', '📱 Redirigiendo a WhatsApp como alternativa...');
-      setTimeout(() => {
-        const waMsg = encodeURIComponent(`Hola, soy ${name}${company ? ' de ' + company : ''}.\n\nTipo de proyecto: ${type}\n\n${msg}\n\nContacto: ${email}${phone ? ' / ' + phone : ''}`);
-        window.open(`https://wa.me/522225463001?text=${waMsg}`, '_blank');
-        btn.disabled = false;
-        btn.textContent = 'Enviar Solicitud';
-      }, 1500);
+    .catch(() => {
+      showFormMsg('error', '❌ Hubo un error al enviar. Contáctanos por WhatsApp.');
+      btn.disabled = false;
+      btn.textContent = 'Enviar Solicitud';
     });
 }
 
@@ -1103,6 +1092,36 @@ renderBlog();
 initFadeObserver();
 </script>
 
+<script>
 
+  document
+  .getElementById("quote-form")
+  .addEventListener("submit", function(event){
+  
+    event.preventDefault();
+  
+    emailjs.sendForm(
+      'service_9a2uip6',
+      'template_uw51ama',
+      this
+    )
+    .then(function(){
+  
+      alert("¡Cotización enviada correctamente!");
+  
+      document.getElementById("quote-form").reset();
+  
+    })
+    .catch(function(error){
+  
+      alert("Error al enviar la cotización");
+  
+      console.log(error);
+  
+    });
+  
+  });
+  
+  </script>
 </body>
 </html>
