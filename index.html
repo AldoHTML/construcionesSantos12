@@ -1014,9 +1014,8 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = 'Enviando...';
 
-  // EmailJS — reemplaza los valores de abajo con los tuyos de emailjs.com
   const serviceID  = 'service_9a2uip6';
-  const templateID = 'template_uw51ama';
+  const templateID = 'template_l71pfst';
 
   const templateParams = {
     from_name:    name,
@@ -1104,36 +1103,6 @@ renderBlog();
 initFadeObserver();
 </script>
 
-<script>
 
-  document
-  .getElementById("quote-form")
-  .addEventListener("submit", function(event){
-  
-    event.preventDefault();
-  
-    emailjs.sendForm(
-      'service_9a2uip6',
-      'template_uw51ama',
-      this
-    )
-    .then(function(){
-  
-      alert("¡Cotización enviada correctamente!");
-  
-      document.getElementById("quote-form").reset();
-  
-    })
-    .catch(function(error){
-  
-      alert("Error al enviar la cotización");
-  
-      console.log(error);
-  
-    });
-  
-  });
-  
-  </script>
 </body>
 </html>
